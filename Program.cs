@@ -22,12 +22,47 @@ We have threadpool, concurrency != parrelism as we know but async await utlises 
 /*
  * Use async local is correct approach but the context in which the value has been set is not being used by the thread pool hence we need to use that when operation on the action
  */
-var asyncLocalValue = new AsyncLocal<int>();
-for (var i = 0; i < 100; i++)
+// var asyncLocalValue = new AsyncLocal<int>();
+//
+// for (var i = 0; i < 100; i++)
+// {
+//     asyncLocalValue.Value = i;
+//     MyThreadPool.QueueUserWorkItem(delegate { Console.WriteLine(asyncLocalValue.Value); });
+// }
+
+
+// var asyncLocalValue = new AsyncLocal<int>();
+// var tasks = new List<MyTask>();
+//
+// for (var i = 0; i < 100; i++)
+// {
+//     asyncLocalValue.Value = i;
+//     tasks.Add(MyTask.Run(() =>
+//     {
+//         Console.WriteLine(asyncLocalValue.Value);
+//         Thread.Sleep(10);
+//     }));
+// }
+//
+// MyTask.WaitAll(tasks);
+
+// Console.Write("Hello,");
+// MyTask.Delay(2000).ContinueWith(() =>
+// {
+//     Console.Write(" World");
+//     return MyTask.Delay(2000).ContinueWith(() =>
+//     {
+//         Console.Write(" and Vas");
+//     });
+//
+// }).Wait();
+// Console.ReadKey();
+
+static async Task PrintAsync()
 {
-    asyncLocalValue.Value = i;
-    MyThreadPool.QueueUserWorkItem(delegate { Console.WriteLine(asyncLocalValue.Value); });
+    for (int i = 0;; i++)
+    {
+        await MyTask.Delay(1000);
+        Console.WriteLine(i);
+    }
 }
-
-
-Console.ReadKey();
