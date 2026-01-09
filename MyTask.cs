@@ -71,6 +71,8 @@ public class MyTask
     // The "Gate" Creation: If the task is not done, it creates a new ManualResetEventSlim(false). This is a gate that starts in the closed state.
     //  The Callback Registration: It calls ContinueWith(resetEvent.Set). This is the clever part. It tells the task: "When you finally finish, please call .Set() on this gate to open it.
     // The Block: Finally, outside the lock, it calls resetEvent?.Wait(). The thread now sits there and does nothing (it's blocked) until the task finishes and opens the gate.
+    // This act of stopping a thread untill something esle completes is a called synchronous blocking
+    // because you are starting the work, stopping the thread untill it something finishes    
     /// </summary>
     public void Wait()
     {
@@ -82,6 +84,12 @@ public class MyTask
                 /*
                  * In your MyTask implementation, the Wait() method is performing a synchronous block. Its job is to stop the current thread from moving forward until the task has actually finished (either successfully or with an exception).   
                    Think of it as turning an asynchronous operation back into a "stop and wait" operation.
+                   This is synchronous blocking:
+                    CPU is not used
+                    But a thread is consumed
+                    Stack memory is held
+
+                Thread pool capacity is reduced
                  */
                 resetEvent = new ManualResetEventSlim();
                 ContinueWith(resetEvent.Set);
